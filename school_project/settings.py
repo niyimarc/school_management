@@ -135,3 +135,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
+
+BASE_URL = os.environ.get('BASE_URL')
+BASE_URL = BASE_URL 
