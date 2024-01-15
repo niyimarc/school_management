@@ -34,6 +34,7 @@ class Profile(models.Model):
     address = models.CharField(max_length=200, verbose_name="Home Address", null=True, blank=True)
     gender = models.CharField(choices=GENDER, null=True, blank=True, max_length=6)
     dob = models.DateField(verbose_name="Date of Birth", null=True, blank=True)
+    image = models.ImageField(upload_to="profile_picture/", null=True, blank=True)
     role = models.CharField(max_length=13, choices=ROLE, null=True, blank=True)
     status = models.CharField(max_length=9, choices=STATUS, default="Inactive")
     is_verified = models.BooleanField(default=False)

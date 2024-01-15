@@ -138,3 +138,7 @@ STATICFILES_DIRS = [
 
 BASE_URL = os.environ.get('BASE_URL')
 BASE_URL = BASE_URL 
+
+# the user will be redirected here if logged in successfully 
+LOGIN_REDIRECT_URL = 'school_app:dashboard'
+LOGIN_URL = 'user_profile:login'
