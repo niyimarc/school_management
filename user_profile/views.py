@@ -61,19 +61,23 @@ class CustomLoginView(LoginView):
 
 def register(request):
     if request.method == "POST":
+        print("The post method is successful")
         regform = RegForm(request.POST)
         if regform.is_valid():
+            print("The form is valid")
             regform.save(commit=True)
             messages.success(request, 'Account Created successfully')
             return redirect("school_app:dashboard")
         else:
+            print("The form is invalid")
             # Iterate through form errors and add them to messages
             for field, errors in regform.errors.items():
                 for error in errors:
                     messages.error(request, f"Error in {field}: {error}")
     else:
+        print("The post method is not successful")
         regform = RegForm()
-    return render(request, 'plans/auth/sign_up.html', {"regform": regform})
+    return render(request, 'school_app/auth/sign_up.html', {"regform": regform})
 
 def verify_email(request, token):
     # Find the profile associated with the token

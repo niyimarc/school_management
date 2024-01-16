@@ -80,4 +80,4 @@ class Profile(models.Model):
         return False
 
     def __str__(self):
-        return self.user
+        return self.user.username
