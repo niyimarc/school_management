@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from user_profile.models import Profile
 from school_setting.models import ClassRoom, Subject
+from django.core.exceptions import ValidationError
 
 CA = (
     ('Test', 'Test'),
@@ -52,14 +53,23 @@ class ContinuousAssesment(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.subject} {self.ca_type} for {self.subject.class_room.class_room_name} on {self.subject.created_on}"
+
 class StudentContinuousAssesmentScore(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     ca = models.ForeignKey(ContinuousAssesment, on_delete=models.CASCADE, verbose_name="Continous Assesment")
     student_score = models.PositiveIntegerField(default=0)
-    obtainable_score = models.PositiveIntegerField(default=0)
-    student_total_score = models.PositiveIntegerField(default=0)
+    obtainable_score = models.PositiveIntegerField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.obtainable_score:
+            if self.student_score > self.ca.maximum_score:
+                raise ValidationError("Student score cannot be more than the Obtainable score.")
+            self.obtainable_score = self.ca.maximum_score
+        super().save(*args, **kwargs)
 
 class Assignment(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -73,9 +83,16 @@ class StudentAssignmentScore(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, verbose_name="Assignment")
     student_score = models.PositiveIntegerField()
     obtainable_score = models.PositiveIntegerField()
-    student_total_score = models.PositiveIntegerField()
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.obtainable_score:
+            if self.student_score > self.assignment.maximum_score:
+                raise ValidationError("Student score cannot be more than the Obtainable score.")
+            self.obtainable_score = self.assignment.maximum_score
+        super().save(*args, **kwargs)
+
 
 class Examination(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -89,10 +106,16 @@ class StudentExaminationScore(models.Model):
     exam = models.ForeignKey(ContinuousAssesment, on_delete=models.CASCADE)
     student_score = models.PositiveIntegerField(default=0)
     obtainable_score = models.PositiveIntegerField(default=0)
-    student_total_score = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=8, choices=STATUS)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.obtainable_score:
+            if self.student_score > self.exam.maximum_score:
+                raise ValidationError("Student score cannot be more than the Obtainable score.")
+            self.obtainable_score = self.exam.maximum_score
+        super().save(*args, **kwargs)
 
 class StudentTotalGrade(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
