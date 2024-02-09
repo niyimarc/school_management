@@ -65,4 +65,4 @@ class Subject(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.subject_name}"
+        return f"{self.subject_name} for {self.class_room}"

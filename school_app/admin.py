@@ -34,13 +34,14 @@ class AssignmentAdmin(admin.ModelAdmin):
 
 class StudentAssignmentScoreAdmin(admin.ModelAdmin):
     list_display = ('student', 'assignment', 'student_score', 'obtainable_score', 'created_on', 'updated_on')
+    readonly_fields = ('obtainable_score',)
 
 class ExaminationAdmin(admin.ModelAdmin):
     list_display = ('subject', 'maximum_score', 'exam_date', 'created_on', 'updated_on')
 
 class StudentExaminationScoreAdmin(admin.ModelAdmin):
     list_display = ('student', 'exam', 'student_score', 'obtainable_score', 'created_on', 'updated_on')
-
+    readonly_fields = ('obtainable_score',)
 class StudentTotalGradeAdmin(admin.ModelAdmin):
     list_display = ('student', 'subject', 'ca_score', 'exam_score', 'total_score', 'student_grade', 'created_on', 'updated_on')
 

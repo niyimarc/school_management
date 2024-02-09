@@ -1,10 +1,24 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import StudentContinuousAssesmentScore, StudentTotalGrade
+from .models import StudentContinuousAssesmentScore, StudentTotalGrade, StudentAssignmentScore, StudentExaminationScore
 
 @receiver(post_save, sender=StudentContinuousAssesmentScore)
-def update_student_ca_score(sender, instance, created, **kwargs):
+def update_student_test_and_class_work_score_in_ca(sender, instance, created, **kwargs):
     if created:
         student_ca_score, created = StudentTotalGrade.objects.get_or_create(student=instance.student, subject=instance.ca.subject)
         student_ca_score.ca_score += instance.student_score
         student_ca_score.save()
+
+@receiver(post_save, sender=StudentAssignmentScore)
+def update_student_assignment_score_in_ca(sender, instance, created, **kwargs):
+    if created:
+        student_assignment_score, created = StudentTotalGrade.objects.get_or_create(student=instance.student, subject=instance.assignment.subject)
+        student_assignment_score.ca_score += instance.student_score
+        student_assignment_score.save()
+
+@receiver(post_save, sender=StudentExaminationScore)
+def update_student_exam_score_in_ca(sender, instance, created, **kwargs):
+    if created:
+        student_exam_score, created = StudentTotalGrade.objects.get_or_create(student=instance.student, subject=instance.exam.subject)
+        student_exam_score.exam_score += instance.student_score
+        student_exam_score.save()

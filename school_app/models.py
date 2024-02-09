@@ -54,7 +54,7 @@ class ContinuousAssesment(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.subject} {self.ca_type} for {self.subject.class_room.class_room_name} on {self.subject.created_on}"
+        return f"{self.subject} {self.ca_type} for {self.subject.class_room.class_room_name} on {self.created_on}"
 
 class StudentContinuousAssesmentScore(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -77,6 +77,9 @@ class Assignment(models.Model):
     description = models.TextField(null=True, blank=True)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.subject} Assignment for {self.subject.class_room.class_room_name} on {self.created_on}"
 
 class StudentAssignmentScore(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -101,9 +104,12 @@ class Examination(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.subject}"
+
 class StudentExaminationScore(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
-    exam = models.ForeignKey(ContinuousAssesment, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Examination, on_delete=models.CASCADE)
     student_score = models.PositiveIntegerField(default=0)
     obtainable_score = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=8, choices=STATUS)
@@ -126,3 +132,19 @@ class StudentTotalGrade(models.Model):
     student_grade = models.CharField(max_length=3, default="Nil")
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        self.total_score = self.ca_score + self.exam_score
+        if self.total_score >= 75:
+            self.student_grade = "A"
+        elif self.total_score >= 65:
+            self.student_grade = "B"
+        elif self.total_score >= 55:
+            self.student_grade = "C"
+        elif self.total_score >= 50:
+            self.student_grade = "D"
+        elif self.total_score >= 40:
+            self.student_grade = "E"
+        else:
+            self.student_grade = "F"
+        super().save(*args, **kwargs)
