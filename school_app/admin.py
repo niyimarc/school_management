@@ -10,14 +10,17 @@ from .models import (
     Examination,
     StudentExaminationScore,
     StudentTotalGrade,
+    StudentCurrentClass,
     )
 # Register your models here.
+class StudentCurrentClassAdmin(admin.ModelAdmin):
+    list_display = ('class_room', 'created_on', 'updated_on')
 
 class ParentProfileAdmin(admin.ModelAdmin):
     list_display = ('parent', 'created_on', 'updated_on')
 
 class StudentProfileAdmin(admin.ModelAdmin):
-    list_display = ('student', 'admission_date', 'current_class', 'created_on', 'updated_on')
+    list_display = ('student', 'admission_date', 'created_on', 'updated_on')
 
 class TeacherProfileAdmin(admin.ModelAdmin):
     list_display = ('teacher', 'employed_date', 'created_on', 'updated_on')
@@ -45,6 +48,7 @@ class StudentExaminationScoreAdmin(admin.ModelAdmin):
 class StudentTotalGradeAdmin(admin.ModelAdmin):
     list_display = ('student', 'subject', 'ca_score', 'exam_score', 'total_score', 'student_grade', 'created_on', 'updated_on')
 
+admin.site.register(StudentCurrentClass, StudentCurrentClassAdmin)
 admin.site.register(ParentProfile, ParentProfileAdmin)
 admin.site.register(StudentProfile, StudentProfileAdmin)
 admin.site.register(TeacherProfile, TeacherProfileAdmin)

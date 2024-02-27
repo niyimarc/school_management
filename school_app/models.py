@@ -15,10 +15,15 @@ STATUS = (
 )
 
 # Create your models here.
+class StudentCurrentClass(models.Model):
+    students = models.ManyToManyField(User, related_name="student_current_class")
+    class_room = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
 class StudentProfile(models.Model):
     student = models.ForeignKey(Profile, on_delete=models.CASCADE)
     admission_date = models.DateField()
-    current_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
